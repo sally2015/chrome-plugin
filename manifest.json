@@ -5,8 +5,12 @@
   "description": "我的第一个Chrome插件，还不错吧",
   "content_scripts": [
     {
-      "matches": ["https://www.shanbay.com/*"],
-      "js": ["myscript.js"]
+      "matches": ["https://www.theguardian.com/*"],
+      "js": ["tool.js","popup.js","myscript.js"],
+      "css": ["custom.css"]
     }
+  ],
+  "permissions": [
+    "https://www.shanbay.com/"
   ]
 }
