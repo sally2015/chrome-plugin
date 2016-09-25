@@ -10,7 +10,7 @@ var tool = {
 
 		xhr.onreadystatechange = function(){
 			if(xhr.readyState == 4 && xhr.status == 200){
-				console.log(cb)
+				
 				cb(xhr.responseText);
 			}
 		}

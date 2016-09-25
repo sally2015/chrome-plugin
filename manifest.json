@@ -2,11 +2,11 @@
   "name": "第一个Chrome插件",
   "manifest_version": 2,
   "version": "1.0",
-  "description": "我的第一个Chrome插件，还不错吧",
+  "description": "click and translate",
   "content_scripts": [
     {
       "matches": ["https://www.theguardian.com/*"],
-      "js": ["tool.js","popup.js","myscript.js"],
+      "js": ["domReady.js","tool.js","initArticle.js","popup.js","myscript.js"],
       "css": ["custom.css"]
     }
   ],

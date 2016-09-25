@@ -1,8 +1,10 @@
+
 (function(win){
 	//主程序入口
 	var main = {
 
 		init : function(){
+			ad.init();
 			this.initPopupDom();
 			this.events();
 		},
@@ -19,7 +21,12 @@
 						
 					},
 					cb:function(data){
-						
+						var json = JSON.parse(data);
+						if(json.msg == "SUCCESS"){
+								console.log(2);
+							popLayer.changeContent(json.data);
+						}
+
 					}
 				});
 
@@ -30,15 +37,20 @@
 
 			var str = "";
 			var objPopup=document.createElement('div');
+			var oHeader = document.getElementsByTagName('header')[0];
 				objPopup.id="popup";
 				objPopup.className="query-word";
 
 			str+='<div id="query-content">\
-						<div class="title">\
+					<div class="triangle triangle-left"></div>\
+					<div class="triangle-outter triangle-left"></div>\
+					<div class="triangle triangle-right"></div>\
+					<div class="triangle-outter triangle-right"></div>\
+			 			<div class="title">\
 							<span id="queryWord" class="word">urge</span>\
 							<span id="querypPronunciation" class="pronunciation">/ɜːrdʒ/</span>\
 							<a id="querypSpeak" class="speaker">\
-					         	<i class="sf-icon-speaker"></i>\
+					         	<i class="iconfont icon"></i>\
 					      	</a>\
 						</div>\
 					    <div class="definition">\
@@ -46,23 +58,17 @@
 					    </div>\
 					</div>';
 			objPopup.innerHTML = str;
-			document.body.appendChild(objPopup);
-
-			//初始化各对象
-			this.objPopup = objPopup;
-			this.queryWord = document.getElementById('queryWord');
-			this.querypPronunciation = document.getElementById('querypPronunciation');
-			this.querypSpeak = document.getElementById('querypSpeak');
-			this.queryDef = document.getElementById('queryDef');
+			document.body.insertBefore(objPopup,oHeader);
+			popLayer.init();
 
 		}
 	}
-
-	main.init();
-
+	
+domReady(function(){
+		main.init();
+	});
+	 
+  
+		
 })(window)
-
-
-
-
 
