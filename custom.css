@@ -230,3 +230,6 @@ video{
     top: 22px;
     left: 10px;
 }
+.tonal__head{
+    display: block !important;
+}
