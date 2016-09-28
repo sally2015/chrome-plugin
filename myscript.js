@@ -10,28 +10,91 @@
 		},
 		events : function(){
 			
-			document.ondblclick = function(){//双击获取关键词
+			var senList = document.querySelectorAll('.sentence');
+			var len = senList.length;
+			var key = null;
+			var self = this;
+			this.lastTarget = null; //记录上次点击的节点
+			//点击文章内容时
+			for(var i = 0; i < len; i++){
 
-				var keyWord = tool.getSelect();
-				tool.ajax({
-					url:'https://www.shanbay.com/api/v1/bdc/search/',
-					data:{
-						word:keyWord,
-						_:(new Date()).getTime()
-						
-					},
-					cb:function(data){
-						var json = JSON.parse(data);
-						if(json.msg == "SUCCESS"){
-								console.log(2);
-							popLayer.changeContent(json.data);
+				senList[i].addEventListener('click',function(ev){
+					ev.stopPropagation();
+					var target = ev.target;
+
+					if( target.tagName.toLowerCase() === "span" ){
+
+						if( tool.hasClass(target,'active') ){
+							return;
+						}
+						tool.addClass(target,'active');
+
+						if( self.lastTarget ){
+							tool.removeClass(self.lastTarget,'active');
 						}
 
+						self.lastTarget = target;
+
+						key = target.innerHTML.replace(/\.|\"|\,/g,'');
+						
+						self.getData(key,function(){
+							popLayer.computePosition(ev);
+						});
+
+					}else{
+						popLayer.hide();
+
+						if( self.lastTarget ){
+							tool.removeClass(self.lastTarget,'active');
+							self.lastTarget = null;
+						}
+				
 					}
+
 				});
 
 			}
+			//双击获取标题关键词
+			document.ondblclick = function(ev){
 
+				var key = tool.getSelect();
+				self.getData(key,function(){
+					popLayer.computePosition(ev);
+				});
+			}
+
+			document.addEventListener('click',function(ev){
+				popLayer.hide();
+				
+				if( self.lastTarget ){
+					tool.removeClass(self.lastTarget,'active');
+					self.lastTarget = null;
+				}
+				
+
+			});
+
+		},
+		getData : function(key,cb){
+			tool.ajax({
+				url:'https://www.shanbay.com/api/v1/bdc/search/',
+				data:{
+					word:key,
+					_:(new Date()).getTime()
+					
+				},
+				cb:function(data){
+					var json = JSON.parse(data);
+					if(json.msg == "SUCCESS"){
+						popLayer.changeContent(json.data);
+						cb ? cb() :"";
+					}else{
+						popLayer.noContent(key,json.msg);
+						cb ? cb() :"";
+					}
+
+				}
+			});
 		},
 		initPopupDom : function(){ //初始化弹层
 
@@ -47,26 +110,50 @@
 					<div class="triangle triangle-right"></div>\
 					<div class="triangle-outter triangle-right"></div>\
 			 			<div class="title">\
-							<span id="queryWord" class="word">urge</span>\
-							<span id="querypPronunciation" class="pronunciation">/ɜːrdʒ/</span>\
+							<span id="queryWord" class="word"></span>\
+							<span id="querypPronunciation" class="pronunciation"></span>\
 							<a id="querypSpeak" class="speaker">\
 					         	<i class="iconfont icon"></i>\
 					      	</a>\
 						</div>\
 					    <div class="definition">\
-					       	<span id="queryDef">n. 冲动 vt. 驱策,鼓励,力陈,催促 vi. 极力主张</span>\
+					       	<span id="queryDef"></span>\
 					    </div>\
+					    <audio id="player" src="" name="media">\
+					    </audio>\
 					</div>';
 			objPopup.innerHTML = str;
 			document.body.insertBefore(objPopup,oHeader);
 			popLayer.init();
 
+		},
+		loadingAnimate : function(){
+			var oDiv = document.createElement('div');
+			oDiv.className="spinner-wrap";
+			var str = '<div class="spinner">\
+							  	<div class="double-bounce1"></div>\
+							  	<div class="double-bounce2"></div>\
+							  	<span class="text">加载中~~</span>\
+							</div>';
+							
+			oDiv.innerHTML = str;
+			document.body.appendChild(oDiv);
 		}
 	}
 	
-domReady(function(){
+	domReady(function(){
 		main.init();
+		main.loadingAnimate()
+
 	});
+
+	window.onload = function(){
+
+		var spinner = document.getElementsByClassName('spinner-wrap')[0];
+		spinner.style.display = 'none';
+	}
+
+
 	 
   
 		

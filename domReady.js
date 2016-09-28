@@ -28,7 +28,9 @@
       //开始初始化domReady函数，判定页面的加载情况
       //捕获ready回调函数在浏览器事件发生之后被调用的情况
       if ( document.readyState === "complete" ||(document.readyState !== "loading" && !document.documentElement.doScroll) ) {
+        
         dom.fireReady();
+
       }else if(-[1,] ){//判断浏览器
         document.addEventListener( "DOMContentLoaded", function() {
           document.removeEventListener( "DOMContentLoaded",  arguments.callee , false );
